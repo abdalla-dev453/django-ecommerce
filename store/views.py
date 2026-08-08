@@ -106,4 +106,14 @@ def order_create(request):
 # ----REGISTER VIEWS ----
 def register(request):
     if request.method == 'POST':
-        
+        form = UserRegistrationForm(request.POST)
+        if form.is_valid():
+            new_user = form.save(commit=False)
+            new_user.set_password(form.cleaned_data['password'])
+            new_user.save()
+            Profile.objects.create(user=new_user)
+            login(request, new_user)
+            return redirect('product_list')
+    else:
+        form = UserRegistrationForm()
+    return render(request, 'store/register.html', {'form': form})
