@@ -1,4 +1,4 @@
-from .models import Category, Order, Product, Order, OrderItem
+from .models import Category, Order, Product, Order, OrderItem, Profile
 from django.contrib import admin
 
 # Register your models here.
@@ -24,3 +24,8 @@ class OrderAdmin(admin.ModelAdmin):
     list_display = ['id', 'first_name', 'last_name', 'email', 'address', 'city', 'paid', 'created_at']
     list_filter = ['paid', 'created_at']
     inlines = [OrderItemInline]
+
+
+@admin.register(Profile)
+class ProfileAdmin(admin.ModelAdmin):
+    list_display = ['user', 'phone', 'city']

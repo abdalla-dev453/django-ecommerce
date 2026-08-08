@@ -1,5 +1,7 @@
 from django import forms
 from .models import Order
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationPolicy
 
 PRODUCT_QUANTITY_CHOICES = [(i, str(i)) for i in range(1, 11)]
 
@@ -28,3 +30,26 @@ class OrderCreateForm(forms.ModelForm):
             'address': forms.TextInput(attrs={'class': 'w-full p-2.5 border border-gray-300 rounded-lg'}),
             'city': forms.TextInput(attrs={'class': 'w-full p-2.5 border border-gray-300 rounded-lg'}),
         }
+
+
+
+# User registration form
+class UserRegistrationForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'w-full p-2.5 border border-gray-300 rounded-lg'}))
+    password_confirm = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'w-full p-2.5 border border-gray-300 rounded-lg'}))
+
+    class Meta:
+        model = User
+        fields = ["username", "first_name", "last_name", "email"]
+        widgets = {
+            "username": forms.TextInput(attrs={'class': 'w-full p-2.5 border border-gray-300 rounded-lg'}),
+            "first_name": forms.TextInput(attrs={'class': 'w-full p-2.5 border border-gray-300 rounded-lg'}),
+            "last_name": forms.TextInput(attrs={'class': 'w-full p-2.5 border border-gray-300 rounded-lg'}),
+            "email": forms.EmailInput(attrs={'class': 'w-full p-2.5 border border-gray-300 rounded-lg'}),
+        }
+
+    def clean_password_confirm(self):
+        cd = self.cleaned_data
+        if cd["password"] != cd["password_confirm"]:
+            raise forms.ValidationError("Passwords don't match.")
+        return cd["password_confirm"]

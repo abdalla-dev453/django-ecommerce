@@ -1,8 +1,12 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.http import require_POST
-from .models import Category, Product, OrderItem
+from .models import Category, Product, OrderItem, Profile, Order
 from .cart import Cart
-from .forms import CartAddProductForm, OrderCreateForm
+from .forms import CartAddProductForm, OrderCreateForm, UserRegistrationForm
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import login, logout, authenticate
+
 
 # Create your views here.
 def product_list(request, category_slug=None):
@@ -97,3 +101,9 @@ def order_create(request):
         form = OrderCreateForm()
 
     return render(request, 'store/checkout.html', {'cart': cart, 'form': form})
+
+
+# ----REGISTER VIEWS ----
+def register(request):
+    if request.method == 'POST':
+        
