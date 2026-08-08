@@ -1,7 +1,6 @@
 from django import forms
 from .models import Order
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationPolicy
 
 PRODUCT_QUANTITY_CHOICES = [(i, str(i)) for i in range(1, 11)]
 
@@ -31,9 +30,6 @@ class OrderCreateForm(forms.ModelForm):
             'city': forms.TextInput(attrs={'class': 'w-full p-2.5 border border-gray-300 rounded-lg'}),
         }
 
-
-
-# User registration form
 class UserRegistrationForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'w-full p-2.5 border border-gray-300 rounded-lg'}))
     password_confirm = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'w-full p-2.5 border border-gray-300 rounded-lg'}))
@@ -50,6 +46,9 @@ class UserRegistrationForm(forms.ModelForm):
 
     def clean_password_confirm(self):
         cd = self.cleaned_data
-        if cd["password"] != cd["password_confirm"]:
+        password = cd.get("password")
+        password_confirm = cd.get("password_confirm")
+        
+        if password and password_confirm and password != password_confirm:
             raise forms.ValidationError("Passwords don't match.")
-        return cd["password_confirm"]
+        return password_confirm

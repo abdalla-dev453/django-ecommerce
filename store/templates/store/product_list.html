@@ -12,25 +12,73 @@
     <div class="flex flex-col md:flex-row gap-8">
 
         {% comment %} sidebar / Category filter {% endcomment %}
-        <aside class="w-full md:w-64 flex-shrink-0">
-            <div class="bg-white p-5 rounded-lg border border-gray-200">
-                <h3 class="font-bold text-gray-900 text-lg mb-4">Categories</h3>
-                <ul class="space-y-2">
-                    <li>
-                        <a href="{% url 'product_list' %}"
-                        class="block px-3 py-2 rounded-md font-medium transition {% if not category %}bg-indigo-100 text-indigo-600 {% else %}text-gray-600 hover:bg-gray-100{% endif %}">All Products</a>
-                    </li>
-                    
-                    {% for cat in categories %}
-                        <li>
-                            <a href="{% url 'product_list_by_category' cat.slug %}"
-                            class="block px-3 py-2 rounded-md font-medium transition">{{ cat.name }}</a>
-                        </li>
-                    {% endfor %}
-                        
-                </ul>
+     <aside class="w-full md:w-72 flex-shrink-0 space-y-6">
+    <!-- Categories Card -->
+    <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm transition-all duration-200 hover:shadow-md">
+        <div class="flex items-center space-x-2 mb-4">
+            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path></svg>
+            <h3 class="font-bold text-gray-900 text-base tracking-tight">Categories</h3>
+        </div>
+        
+        <ul class="space-y-1.5">
+            <li>
+                <a href="{% url 'product_list' %}"
+                   class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 {% if not category %}bg-indigo-50 text-indigo-600 font-semibold{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
+                    <span>All Products</span>
+                    {% if not category %}
+                        <span class="w-1.5 h-1.5 rounded-full bg-indigo-600"></span>
+                    {% endif %}
+                </a>
+            </li>
+            
+            {% for cat in categories %}
+                <li>
+                    <a href="{% url 'product_list_by_category' cat.slug %}"
+                       class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium text-gray-600 transition-all duration-200 hover:bg-gray-50 hover:text-gray-900 {% if category.slug == cat.slug %}bg-indigo-50 text-indigo-600 font-semibold{% endif %}">
+                        <span>{{ cat.name }}</span>
+                        {% if category.slug == cat.slug %}
+                            <span class="w-1.5 h-1.5 rounded-full bg-indigo-600"></span>
+                        {% endif %}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Price Range Filter Card -->
+    <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm transition-all duration-200 hover:shadow-md">
+        <div class="flex items-center space-x-2 mb-4">
+            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <h3 class="font-bold text-gray-900 text-base tracking-tight">Price Range</h3>
+        </div>
+
+        <form method="get" action="{% if category %}{% url 'product_list_by_category' category.slug %}{% else %}{% url 'product_list' %}{% endif %}" class="space-y-4">
+            {% if query %}<input type="hidden" name="q" value="{{ query }}">{% endif %}
+            
+            <div class="flex items-center space-x-3">
+                <div class="relative w-full">
+                    <span class="absolute left-3 top-2.5 text-gray-400 text-xs font-medium">$</span>
+                    <input type="number" name="min_price" value="{{ min_price }}" placeholder="Min" 
+                           class="w-full pl-7 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-200">
+                </div>
+                
+                <span class="text-gray-400 text-xs font-semibold">to</span>
+                
+                <div class="relative w-full">
+                    <span class="absolute left-3 top-2.5 text-gray-400 text-xs font-medium">$</span>
+                    <input type="number" name="max_price" value="{{ max_price }}" placeholder="Max" 
+                           class="w-full pl-7 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-200">
+                </div>
             </div>
-        </aside>
+
+            <button type="submit" 
+                    class="w-full bg-indigo-600 text-white font-semibold py-2.5 rounded-xl text-sm shadow-sm shadow-indigo-600/10 hover:bg-indigo-700 hover:shadow-indigo-600/20 active:scale-[0.98] transition-all duration-200">
+                Apply Filter
+            </button>
+        </form>
+    </div>
+</aside>
+
 
         {% comment %} Main Product Grid {% endcomment %}
         <section class="flex-grow">

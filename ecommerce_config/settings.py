@@ -119,3 +119,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+
+# Stripe Configuration
+STRIPE_PUBLISHABLE_KEY = 'pk_test_51U27DXBSlNkVKUBAVSh5nvJDMFkyqKLiD6yZU1AAKAr8RvrixseZBxwpVGc2anGCfiRKKoigXHFwAIqFJYyUAb9F00maEFIx7A'
+STRIPE_SECRET_KEY = 'sk_test_51U27DXBSlNkVKUBAmQgCrKnc0xKFRRghb3bJgk8RQqwUo2SKG4PUJLpw6zmTVypuLRuvRXKrx4fozPfzsQsyLcj200y8WbOGwW'
+STRIPE_WEBHOOK_SECRET = 'whsec_your_webhook_secret_here'  # Optional for local dev
