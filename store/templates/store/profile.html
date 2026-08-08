@@ -1,0 +1,37 @@
+{% extends 'store/base.html' %}
+
+
+{% block title %}
+    Profile - ShopZone
+{% endblock title %}
+    
+
+
+{% block content %}
+    <h1 class="text-3xl font-bold mb-6 text-gray-900">Welcome, {{ request.user.username }}</h1>
+
+    <div class="bg-white border border-gray-300 rounded-lg p-6 mb-8">
+        <h2 class="text-xl font-bold mb-4">Account Details</h2>
+        <p><strong>Name:</strong>{{ request.user.first_name }} {{ request.user.last_name }}</p>
+        <p><strong>Email:</strong>{{ request.user.email }}</p>
+    </div>
+
+    <div class="bg-white border border-gray-300 rounded-lg">
+        <h2 class="text-xl font-bold mb-4">Order History</h2>
+            
+            {% if orders %}
+                <div class="divide">
+                    {% for order in orders %}
+                        <div class="py-4 flex justify-between items-center">
+                            <p class="font-bold">Order #{{ order.id }}</p>
+                            <p class="text-sm text-gray-500">{{ order.created_at|date:"M d, Y" }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                    <p class="text-gray-500">You haven't placed any orders yet.</p>
+            {% endif %}
+                
+    </div>
+{% endblock content %}
+    
