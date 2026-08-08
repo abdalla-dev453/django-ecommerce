@@ -7,33 +7,31 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, logout, authenticate
 from django.db.models import Q
-from django.config import settings
+from django.conf import settings
 import stripe
 from django.urls import reverse
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
+
 def payment_process(request, order_id):
     order = get_object_or_404(Order, id=order_id)
-
+    
     if request.method == 'POST':
         success_url = request.build_absolute_uri(reverse('payment_completed'))
         cancel_url = request.build_absolute_uri(reverse('payment_canceled'))
 
-        # stripe checkout session data
-        session_data = {
-            'mode': 'payment',
-            'client_reference_id': order.id,
-            'success_url': success_url,
-            'cancel_url': cancel_url,
-            'line_items': [],
-        }
+        # Fetch related items safely
+        if hasattr(order, 'items'):
+            order_items = order.items.all()
+        else:
+            order_items = order.orderitem_set.all()
 
-        # Add items to stripe order
-        for item in order.items.all():
-            session_data["line_items"].append({
+        line_items = []
+        for item in order_items:
+            line_items.append({
                 'price_data': {
-                    'unit_amount': int(item.price * 100),
+                    'unit_amount': int(item.price * 100),  # price in cents
                     'currency': 'usd',
                     'product_data': {
                         'name': item.product.name,
@@ -42,13 +40,22 @@ def payment_process(request, order_id):
                 'quantity': item.quantity,
             })
 
-            session = stripe.checkout.Session.create(**session_data)
-            return redirect(session.url, code=330)
+        session = stripe.checkout.Session.create(
+            mode='payment',
+            client_reference_id=order.id,
+            success_url=success_url,
+            cancel_url=cancel_url,
+            line_items=line_items,
+        )
 
-        return render(request, 'store/payment_process.html',{
-            'order': order,
-            'stripe_publishable_key': settings.STRIPE_PUBLISHABLE_KEY
-            })
+        return redirect(session.url, code=330)
+
+    return render(request, 'store/payment_process.html', {
+        'order': order,
+        'stripe_publishable_key': settings.STRIPE_PUBLISHABLE_KEY,
+    })
+
+
 
 def payment_completed(request):
     return render(request, 'store/payment_completed.html')

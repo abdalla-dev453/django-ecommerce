@@ -1,0 +1,38 @@
+{% extends 'store/base.html' %}
+
+
+{% block title %}
+    Checkout - Payment
+{% endblock title %}
+    
+
+
+{% block content %}
+    <div class="max-w-2xl mx-auto bg-white p-8 rounded-lg border border-gray-300 shadow-sm mt-8">
+        <h1 class="text-2xl font-bold mb-6 text-gray-900">Order Summary #{{ order.id }}</h1>
+
+        <div class="space-y-3 mb-6">
+             
+             {% for item in order.items.all %}
+                <div class="flex justify-between text-sm text-gray-700">
+                    <span>{{ item.product.name }} (x{{ item.quantity }})</span>
+                    <span class="font-medium">${{ item.get_cost }}</span>
+                </div>
+             {% endfor %}
+
+             <div class="border-t pt-3 flex justify-between font-bold text-lg text-gray-900">
+                <span>Total:</span>
+                <span>${{ order.get_total_cost }}</span>
+             </div>
+
+             <form action="{% url 'payment_process' order.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-indigo-700 transition">
+                    Pay with Card (Stripe)
+                </button>
+             </form>
+                
+        </div>
+    </div>
+{% endblock content %}
+    

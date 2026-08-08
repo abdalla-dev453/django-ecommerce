@@ -1,0 +1,59 @@
+{% extends 'store/base.html' %}
+
+{% block title %}Checkout - ShopZone{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto my-8 p-6 bg-white rounded-lg border border-gray-200 shadow-sm">
+    <h1 class="text-2xl font-bold mb-6 text-gray-900">Checkout</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Order Summary -->
+        <div>
+            <h2 class="text-lg font-semibold text-gray-800 mb-4">Your Order</h2>
+            <ul class="divide-y divide-gray-200 mb-4">
+                {% for item in cart %}
+                <li class="py-3 flex justify-between text-sm">
+                    <span class="text-gray-700">{{ item.product.name }} (x{{ item.quantity }})</span>
+                    <span class="font-medium text-gray-900">${{ item.total_price }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+            <div class="flex justify-between font-bold text-lg text-gray-900 pt-3 border-t">
+                <span>Total:</span>
+                <span>${{ cart.get_total_price }}</span>
+            </div>
+        </div>
+
+        <!-- Checkout Form -->
+        <div>
+            <h2 class="text-lg font-semibold text-gray-800 mb-4">Shipping Details</h2>
+            <form method="post" action="{% url 'order_create' %}" class="space-y-4">
+                {% csrf_token %}
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">First Name</label>
+                    {{ form.first_name }}
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Last Name</label>
+                    {{ form.last_name }}
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Email</label>
+                    {{ form.email }}
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Address</label>
+                    {{ form.address }}
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">City</label>
+                    {{ form.city }}
+                </div>
+                <button type="submit" class="w-full mt-4 bg-indigo-600 text-white py-3 rounded-lg font-bold hover:bg-indigo-700 transition">
+                    Proceed to Payment
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

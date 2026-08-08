@@ -1,0 +1,19 @@
+{% extends 'store/base.html' %}
+
+{% block title %}Payment Canceled - ShopZone{% endblock title %}
+
+{% block content %}
+<div class="max-w-lg mx-auto text-center py-12">
+    <div class="mb-4 text-red-500">
+        <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+    </div>
+    <h1 class="text-3xl font-bold text-gray-900 mb-2">Payment Canceled</h1>
+    <p class="text-gray-600 mb-6">Your payment was not processed. You haven't been charged for this order.</p>
+    <div class="space-x-4">
+        <a href="{% url 'cart_detail' %}" class="inline-block bg-indigo-600 text-white px-6 py-2.5 rounded-lg font-medium hover:bg-indigo-700 transition">Return to Cart</a>
+        <a href="{% url 'product_list' %}" class="inline-block bg-gray-100 text-gray-700 px-6 py-2.5 rounded-lg font-medium hover:bg-gray-200 transition">Continue Shopping</a>
+    </div>
+</div>
+{% endblock content %}
